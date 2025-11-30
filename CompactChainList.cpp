@@ -31,11 +31,12 @@ CompactChainList::CompactChainList(vector<Element> &v) {
   
   this -> midPos = ceil(l.size()/2) - 1;
   list<pair<Element, int>>::iterator it = l.begin();
+  
   for (int i = 0; i < ceil(l.size()/2); ++i) {
     this -> midSum += (*it).second;
     ++it;
   }
-  this -> mid = --it;
+  mid = --it;
 };
 
 CompactChainList::CompactChainList(CompactChainList &l2) {
@@ -598,6 +599,8 @@ void CompactChainList::sortVectirCCL(vector<CompactChainList> &v) {
 //falta
 void CompactChainList::print() {
   list<pair<Element, int>>::iterator it;
+  printf("Size: %d, Blocks: %d, Midpos: %d, Mid: {%d, %d},  MidSum: %d\n", s, l.size(), midPos, (*mid).first, (*mid).second, midSum);
+  
   printf("[");
   for (it = l.begin(); it != --l.end(); ++it)
     printf("{%d, %d},", (*it).first, (*it).second);

@@ -12,7 +12,7 @@ typedef int Element;
 class CompactChainList {
  private:
   list<pair<Element, int>> l;
-  list<pair<Element, int>>::iterator mid;
+  list<pair<Element, int>>::iterator  mid;
   int s;
   int midPos;
   int midSum;

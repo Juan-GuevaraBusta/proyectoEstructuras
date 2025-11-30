@@ -44,7 +44,8 @@ class CompactChainList {
   void modifyAllOcurrences(Element e1, Element e2); // listo - probar
   void push_front(Element e, int count); // listo - probar
   void push_back(Element e, int count); //listo - probar
-  static void sortVectirCCL(vector<CompactChainList> &v); // probar
+  //static
+  void sortVectirCCL(vector<CompactChainList> &v); // yuca
   void lol(); //falta
 
   //Sobrecarga de operadores

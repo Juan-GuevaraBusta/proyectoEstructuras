@@ -2,6 +2,7 @@
 #include<cstdio>
 
 int main() {
+  /*
   vector<int> v = {1, 2, 3, 3, 4, 5, 6, 6, 6, 6, 6, 6, 9, 0, 1, 0, 0};
   CompactChainList li1(v);
   CompactChainList li2(li1);
@@ -20,5 +21,6 @@ int main() {
   li2.lol();
   li2.set(2, 0);
   li2.lol();
+  */
   return 0;
 }

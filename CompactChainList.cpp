@@ -251,116 +251,6 @@ list<Element> CompactChainList::expand() {
 
 void CompactChainList::set(int p, Element e) {
   list<pair<Element, int>>::iterator it = l.begin(), aux;
-  int i = 0, indx = 0, aux2 = s, iz, der, pos;
-  if (p >= 0 && p < s) {
-    if (p < midSum) {
-      while (i <= p) {
-	if (i != 0) {
-	  ++it;
-	  ++indx;
-	}
-	if (i += (*it).second > p) {
-	  iz = p - i;
-	  der = (*it).second - iz - 1;
-	}
-	i += (*it).second;
-      }
-    } else {
-      it = --l.end();
-      indx = l.size() - 1;
-      while (i <= s - p - 1) {
-	if (i != 0) {
-	  --it;
-	  --indx;
-	}
-	if (i += (*it).second > s - p - 1) {
-	  iz = (*it).second - der - 1;
-	  der = s - p - i - 1
-	}
-	i += (*it).second;
-      }
-    }
-    
-    if ((*it).first != e && iz == 0) {
-      list<pair<Element, int>>::iterator it2 = mid;
-      pos = ceil((l.size() + 1)/2) - 1;
-      if (indx <= pos) {
-	midsum -= (*(++it2)).second;
-	(*(++it2)).second -= 1;
-	midsum += 1;
-      } else {
-	it2 = mid;
-	mid = ++it2;
-	midPos = pos;
-      }
-      l.insert(it, make_pair(e, 1));
-    } else {
-      list<pair<Element, int>>::iterator it2 = mid;
-      pos = ceil((l.size() + 2)/2) - 1;
-      if (indx <= pos) {
-	if (indx == pos) {
-	  midsum -= (der + 1);
-	} else if (indx == pos - 1) {
-	  midsum -= der;
-	  midsum -= (*mid).second;
-	} else {
-	  aux = mid;
-	  midsum += 1;
-	  midsum -= (*mid).second;
-	  midsum -= (*(--aux)).second;
-	}
-      }
-      (*it).second -= (der + 1);
-      if (it != --l.end()) {
-	aux = it;
-	l.insert(++aux, make_pair((*it).first, der + 1));
-	l.insert(++aux, make_pair(e, 1));
-      } else {
-	l.push_back(make_pair(e, 1));
-	l.push_back(make_pair((*it).first, der + 1));
-      }
-      midpos = pos;
-      aux = mid;
-      mid = ++aux;
-    }
-  }
-}
-
-void CompactChainList::set(int p, Element e) {
-  //FALTAA
-  list<pair<Element, int>>::iterator it = l.begin(), aux;
-  int i = 0, rem, indx = 0;
-  if (p >= 0 && p < s) {
-    while (i < p && p < s) {
-      i += (*it).second;
-      if (i <= p) ++it;
-    }
-    aux = it;
-    if ((*it).first != e && (*it).second > 1 && p < s) {
-      if (i == p)
-	if (it != --l.end())
-	  l.insert(++aux, make_pair((*it).first, (*it).second - 1));
-	else
-	  l.push_back(make_pair((*it).first,  (*it).second - 1));
-      else if (i > p && i - (*it).second  + 1 == p) 
-	l.insert(it, make_pair((*it).first, (*it).second - 1));
-      else {
-	rem = p - (i - (*it).second);
-	l.insert(it, make_pair((*it).first, rem));
-	if (it != --l.end())
-	  l.insert(++aux, make_pair((*it).first, (*it).second - rem));
-	else
-	  l.push_back(make_pair((*it).first, (*it).second - rem));
-      }
-      (*it).first = e;
-      (*it).second = 1;
-    } else if ((*it).first != e && p < s)
-      (*it).first = e;
-  }
-};
-
-void CompactChainList::set(int p, Element e) {
-  list<pair<Element, int>>::iterator it = l.begin(), aux;
   int i = 0, indx = 0, iz, der, pos;
   if (p >= 0 && p < s) {
     if (p < midSum) {
@@ -385,7 +275,7 @@ void CompactChainList::set(int p, Element e) {
 	}
 	if (i += (*it).second > s - p - 1) {
 	  iz = (*it).second - der - 1;
-	  der = s - p - i - 1
+	  der = s - p - i - 1;
 	}
 	i += (*it).second;
       }
@@ -397,13 +287,13 @@ void CompactChainList::set(int p, Element e) {
       list<pair<Element, int>>::iterator it2 = mid;
       pos = ceil((l.size() + 1)/2) - 1;
       if (indx <= pos) {
-	midsum -= ((*(++it2)).second - 1);
+	midSum -= ((*(++it2)).second - 1);
 	(*it).second -= 1;
-        if (pos != midpos && it == ++mid) {
+        if (pos != midPos && it == ++mid) {
 	  l.insert(it, make_pair(e, 1));
 	  it2 = mid;
 	  mid = ++it2;
-	} else if (pos == midpos) {
+	} else if (pos == midPos) {
 	  it2 = mid;
 	  l.insert(it, make_pair(e, 1));
 	  mid = --it2;
@@ -412,22 +302,22 @@ void CompactChainList::set(int p, Element e) {
 	}
       } else {
 	l.insert(it, make_pair(e, 1));
-	if (pos != midpos) {
+	if (pos != midPos) {
 	  it2 = mid;
 	  mid = ++it2;
 	}
       }
-      midpos = pos;
+      midPos = pos;
     } else if ((*it).first != e){
       list<pair<Element, int>>::iterator it2 = mid;
       pos = ceil((l.size() + 2)/2) - 1;
       if (indx <= pos) {
 	if (indx == pos) {
-	  midsum -= (der + 1);
+	  midSum -= (der + 1);
 	} else if (indx == pos - 1) {
-	  midsum -= der;
+	  midSum -= der;
 	} else {
-	  midsum -= (*mid).second;
+	  midSum -= (*mid).second;
 	}
       }
       (*it).second -= (der + 1);
@@ -439,14 +329,14 @@ void CompactChainList::set(int p, Element e) {
 	l.push_back(make_pair(e, 1));
 	l.push_back(make_pair((*it).first, der));
       }
-      if (indx >= pos || indx == midpos ) {
+      if (indx >= pos || indx == midPos ) {
 	aux = mid;
 	mid = ++aux;
-      } else if (indx < midpos) {
+      } else if (indx < midPos) {
 	aux = mid;
 	mid = --aux;
       }
-      midpos = pos;
+      midPos = pos;
     }
   }
 }
@@ -456,7 +346,7 @@ void CompactChainList::removeFirstOcurrence(Element e) {
   bool flag;
   int i = 0, indx;
   
-  while (i <= p && !flag) {
+  while (i < l.size() && !flag) {
     flag = (*it).first == e;
     if (i != 0) {
       ++it;
@@ -469,7 +359,7 @@ void CompactChainList::removeFirstOcurrence(Element e) {
     s -= 1;
     if ((*it).second > 1) {
       (*it).second -= 1;
-      if (indx <= midpos)
+      if (indx <= midPos)
 	midSum -= 1;
     } else {
       remove(it, indx);
@@ -520,30 +410,32 @@ void CompactChainList::removeBlockPosition(int p) {
 };
 
 void CompactChainList::remove(list<pair<Element, int>>::iterator it, int indx) {
+  list<pair<Element, int>>::iterator aux;
+  int pos;
   if (l.size() > 1) {
     list<pair<Element, int>>::iterator it2 = mid;
     pos = ceil((l.size() - 1)/2) - 1;
-    if (indx <= midpos) {
+    if (indx <= midPos) {
       aux = it;
-      midsum -= (*it).second;
-      if (it != --l.end() && pos == midpos)
-	midsum += (*(++aux)).second;
+      midSum -= (*it).second;
+      if (it != --l.end() && pos == midPos)
+	midSum += (*(++aux)).second;
       aux = mid;
-      if (pos != midpos && it == mid)
+      if (pos != midPos && it == mid)
 	mid = --aux;
-      else if (pos == midpos) {
+      else if (pos == midPos) {
 	aux = mid;
 	mid = ++aux;
       }
-    } else if (pos != midpos) {
+    } else if (pos != midPos) {
       aux = mid;
       mid = --aux;
     }
-    if (pos != midpos)
+    if (pos != midPos)
       pos -= 1;	  
   } else {
-    midsum = 0;
-    mid = NULL;
+    midSum = 0;
+    mid = l.end();
   }
   s -= (*it).second;
   l.erase(it);
@@ -576,7 +468,7 @@ void CompactChainList::insertElement(int p, Element e) {
 	}
 	if (i += (*it).second > s - p - 1) {
 	  iz = (*it).second - der - 1;
-	  der = s - p - i - 1
+	  der = s - p - i - 1;
 	}
 	i += (*it).second;
       }
@@ -589,13 +481,13 @@ void CompactChainList::insertElement(int p, Element e) {
       list<pair<Element, int>>::iterator it2 = mid;
       pos = ceil((l.size() + 1)/2) - 1;
       if (indx <= pos) {
-	midsum -= (*(++it2)).second;
-	midsum += 1;
-	if (pos != midpos && it == ++mid) {
+	midSum -= (*(++it2)).second;
+	midSum += 1;
+	if (pos != midPos && it == ++mid) {
 	  l.insert(it, make_pair(e, 1));
 	  it2 = mid;
 	  mid = ++it2;
-	} else if (pos == midpos) {
+	} else if (pos == midPos) {
 	  it2 = mid;
 	  l.insert(it, make_pair(e, 1));
 	  mid = --it2;
@@ -604,23 +496,23 @@ void CompactChainList::insertElement(int p, Element e) {
 	}
       } else {
 	l.insert(it, make_pair(e, 1));
-	if (pos != midpos) {
+	if (pos != midPos) {
 	  it2 = mid;
 	  mid = ++it2;
 	}
       }
-      midpos = pos;
+      midPos = pos;
     } else {
       list<pair<Element, int>>::iterator it2 = mid;
       pos = ceil((l.size() + 2)/2) - 1;
       if (indx <= pos) {
 	if (indx == pos) {
-	  midsum -= (der + 1);
+	  midSum -= (der + 1);
 	} else if (indx == pos - 1) {
-	  midsum -= der;
+	  midSum -= der;
 	} else {
-	  midsum += 1;
-	  midsum -= (*mid).second;
+	  midSum += 1;
+	  midSum -= (*mid).second;
 	}
       }
       (*it).second -= (der + 1);
@@ -632,14 +524,14 @@ void CompactChainList::insertElement(int p, Element e) {
 	l.push_back(make_pair(e, 1));
 	l.push_back(make_pair((*it).first, der + 1));
       }
-      if (indx >= pos || indx == midpos ) {
+      if (indx >= pos || indx == midPos ) {
 	aux = mid;
 	mid = ++aux;
-      } else if (indx < midpos) {
+      } else if (indx < midPos) {
 	aux = mid;
 	mid = --aux;
       }
-      midpos = pos;
+      midPos = pos;
     }
   }
 };
@@ -653,6 +545,7 @@ void CompactChainList::modifyAllOcurrences(Element e1, Element e2) {
 };
 
 void CompactChainList::push_front(Element e, int count) {
+  int pos;
   s += count;
   if (!l.empty() && l.front().first == e) {
     l.front().second += count;
@@ -665,8 +558,8 @@ void CompactChainList::push_front(Element e, int count) {
       midSum += count;
     } else if (pos == midPos && l.size() != 1) {
       list<pair<Element, int>>::iterator it = mid;
-      midSum -= mid.second;
-      midsum += count;
+      midSum -= (*mid).second;
+      midSum += count;
       mid =  --it;
     } else {
       mid = l.begin();
@@ -676,6 +569,7 @@ void CompactChainList::push_front(Element e, int count) {
 };
 
 void CompactChainList::push_back(Element e, int count) {
+  int pos;
   s += count;
   if (!l.empty() && l.back().first == e) {
     l.back().second += count;
@@ -688,7 +582,7 @@ void CompactChainList::push_back(Element e, int count) {
       list<pair<Element, int>>::iterator it = mid;
       mid = ++it;
       midPos = pos;
-      midSum += mid.second;
+      midSum += (*mid).second;
     } else if (l.size() == 1) {
       mid = l.begin();
       midSum = count;
@@ -696,8 +590,9 @@ void CompactChainList::push_back(Element e, int count) {
   }
 };
 
-static void CompactChainList::sortVectirCCL(vector<CompactChainList> &v) {
-  sort(v.begin(), v.end());
+//static
+void CompactChainList::sortVectirCCL(vector<CompactChainList> &v) {
+  //sort(v.begin(), v.end());
 };
 
 //falta
@@ -739,7 +634,6 @@ Element CompactChainList::operator[](int p) {
   return ans;
 };
 
-//confirmar si es así ??
 bool CompactChainList::operator<(CompactChainList &oth) {
   bool ans = this -> s == oth.s;
   list<pair<Element, int>>::iterator it2 = oth.l.begin();

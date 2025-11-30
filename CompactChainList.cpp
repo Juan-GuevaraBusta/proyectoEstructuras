@@ -260,7 +260,7 @@ void CompactChainList::set(int p, Element e) {
 	  ++it;
 	  ++indx;
 	}
-	if (i += (*it).second > p) {
+	if (i + (*it).second > p) {
 	  iz = p - i;
 	  der = (*it).second - iz - 1;
 	}
@@ -274,7 +274,7 @@ void CompactChainList::set(int p, Element e) {
 	  --it;
 	  --indx;
 	}
-	if (i += (*it).second > s - p - 1) {
+	if (i + (*it).second > s - p - 1) {
 	  iz = (*it).second - der - 1;
 	  der = s - p - i - 1;
 	}
@@ -324,8 +324,9 @@ void CompactChainList::set(int p, Element e) {
       (*it).second -= (der + 1);
       if (it != --l.end()) {
 	aux = it;
-	l.insert(++aux, make_pair((*it).first, der));
 	l.insert(++aux, make_pair(e, 1));
+	--aux;
+	l.insert(++aux, make_pair((*it).first, der));
       } else {
 	l.push_back(make_pair(e, 1));
 	l.push_back(make_pair((*it).first, der));
@@ -453,7 +454,7 @@ void CompactChainList::insertElement(int p, Element e) {
 	  ++it;
 	  ++indx;
 	}
-	if (i += (*it).second > p) {
+	if (i + (*it).second > p) {
 	  iz = p - i;
 	  der = (*it).second - iz - 1;
 	}
@@ -467,7 +468,7 @@ void CompactChainList::insertElement(int p, Element e) {
 	  --it;
 	  --indx;
 	}
-	if (i += (*it).second > s - p - 1) {
+	if (i + (*it).second > s - p - 1) {
 	  iz = (*it).second - der - 1;
 	  der = s - p - i - 1;
 	}
@@ -519,8 +520,9 @@ void CompactChainList::insertElement(int p, Element e) {
       (*it).second -= (der + 1);
       if (it != --l.end()) {
 	aux = it;
-	l.insert(++aux, make_pair((*it).first, der + 1));
 	l.insert(++aux, make_pair(e, 1));
+	--aux;
+	l.insert(++aux, make_pair((*it).first, der + 1));
       } else {
 	l.push_back(make_pair(e, 1));
 	l.push_back(make_pair((*it).first, der + 1));
@@ -640,15 +642,19 @@ Element CompactChainList::operator[](int p) {
 bool CompactChainList::operator<(CompactChainList &oth) {
   bool ans = this -> s == oth.s;
   list<pair<Element, int>>::iterator it2 = oth.l.begin();
-  for (list<pair<Element, int>>::iterator it1 = l.begin(); it1 != l.end() && ans; ++it1)
-    if ((*it1) > (*it2)) ans = false;
+  for (list<pair<Element, int>>::iterator it1 = l.begin(); it1 != l.end() && ans; ++it1) {
+    if ((*it1).first > (*it2).first) ans = false;
+    ++it2;
+  }
   return ans;
 };
 
 bool CompactChainList::operator==(const CompactChainList &oth) const {
-  bool ans = this -> s == oth.s;
+  bool ans = s == oth.s;
   list<pair<Element, int>>::const_iterator it2 = oth.l.cbegin();
-  for (list<pair<Element, int>>::const_iterator it1 = l.cbegin(); it1 != l.cend() && ans; ++it1)
-    if ((*it1) != (*it2)) ans = false;
+  for (list<pair<Element, int>>::const_iterator it1 = l.cbegin(); it1 != l.cend() && ans; ++it1) {
+    if ((*it1).first != (*it2).first || (*it1).second != (*it2).second) ans = false;
+    ++it2;
+  }
   return ans;
 };

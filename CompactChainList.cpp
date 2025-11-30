@@ -114,12 +114,86 @@ int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
 };
 
 int CompactChainList::getOcurrences(vector<Element> &v) {
-  int ans;
+  int ans = 0;
+  if (!v.empty()) {
+    list<Element> seq = this -> expand();
+    if (!seq.empty()) {
+      vector<Element> sequence;
+      for (list<Element>::iterator it = seq.begin(); it != seq.end(); ++it) 
+        sequence.push_back(*it); 
+      int seqSize = sequence.size();
+      int vSize = v.size();
+      if (seqSize >= vSize) {
+        vector<pair<int, int>> stack;
+        stack.push_back(make_pair(0, 0));
+        
+        bool flag = false;
+        while (!stack.empty() && !flag) {
+          pair<int, int> actual = stack.back();
+          stack.pop_back();
+          int posSeq = actual.first;
+          int posV = actual.second;
+          if (posV >= vSize)
+            ans++;
+          else if (posSeq < seqSize) {
+            bool encontrado = false;
+            for (int i = posSeq; i < seqSize && !encontrado; ++i) {
+              if (sequence[i] == v[posV]) {
+                stack.push_back(make_pair(i + 1, posV + 1));
+                encontrado = false; 
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  
   return ans;
 };
 
 int CompactChainList::getIndexFirstOcurrence(vector<Element> &v) {
-  int ans;
+  int ans = -1;
+  if (!v.empty()) {
+    list<Element> seq = this -> expand();
+    if (!seq.empty()) {
+      vector<Element> sequence;
+      for (list<Element>::iterator it = seq.begin(); it != seq.end(); ++it)
+        sequence.push_back(*it);
+      int seqSize = sequence.size();
+      int vSize = v.size();
+      if (seqSize >= vSize) {
+        bool flag = false;
+        for (int inicio = 0; inicio < seqSize && ans == -1 && !flag; ++inicio) {
+          if (sequence[inicio] == v[0]) {
+            vector<pair<int, int>> stack;
+            stack.push_back(make_pair(inicio + 1, 1));
+            bool encontrado = false;
+            while (!stack.empty() && !encontrado && !flag) {
+              pair<int, int> actual = stack.back();
+              stack.pop_back();
+              int posSeq = actual.first;
+              int posV = actual.second;
+              if (posV >= vSize) {
+                ans = inicio;
+                encontrado = true;
+                flag = true;
+              }
+              else if (posSeq < seqSize) {
+                bool encontrado2 = false;
+                for (int i = posSeq; i < seqSize && !encontrado2; ++i) {
+                  if (sequence[i] == v[posV]) {
+                    stack.push_back(make_pair(i + 1, posV + 1));
+                    encontrado2 = false;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
   return ans;
 };
 
@@ -261,7 +335,6 @@ void CompactChainList::set(int p, Element e) {
       i += (*it).second;
       if (i <= p) ++it;
     }
-    
     aux = it;
     if ((*it).first != e && (*it).second > 1 && p < s) {
       if (i == p)
@@ -286,6 +359,98 @@ void CompactChainList::set(int p, Element e) {
   }
 };
 
+void CompactChainList::set(int p, Element e) {
+  list<pair<Element, int>>::iterator it = l.begin(), aux;
+  int i = 0, indx = 0, iz, der, pos;
+  if (p >= 0 && p < s) {
+    if (p < midSum) {
+      while (i <= p) {
+	if (i != 0) {
+	  ++it;
+	  ++indx;
+	}
+	if (i += (*it).second > p) {
+	  iz = p - i;
+	  der = (*it).second - iz - 1;
+	}
+	i += (*it).second;
+      }
+    } else {
+      it = --l.end();
+      indx = l.size() - 1;
+      while (i <= s - p - 1) {
+	if (i != 0) {
+	  --it;
+	  --indx;
+	}
+	if (i += (*it).second > s - p - 1) {
+	  iz = (*it).second - der - 1;
+	  der = s - p - i - 1
+	}
+	i += (*it).second;
+      }
+    }
+    
+    if ((*it).first != e && iz == 0 && der == 0) {
+      (*it).first = e;
+    } else if ((*it).first != e && iz == 0) {
+      list<pair<Element, int>>::iterator it2 = mid;
+      pos = ceil((l.size() + 1)/2) - 1;
+      if (indx <= pos) {
+	midsum -= ((*(++it2)).second - 1);
+	(*it).second -= 1;
+        if (pos != midpos && it == ++mid) {
+	  l.insert(it, make_pair(e, 1));
+	  it2 = mid;
+	  mid = ++it2;
+	} else if (pos == midpos) {
+	  it2 = mid;
+	  l.insert(it, make_pair(e, 1));
+	  mid = --it2;
+	} else {
+	  l.insert(it, make_pair(e, 1));
+	}
+      } else {
+	l.insert(it, make_pair(e, 1));
+	if (pos != midpos) {
+	  it2 = mid;
+	  mid = ++it2;
+	}
+      }
+      midpos = pos;
+    } else if ((*it).first != e){
+      list<pair<Element, int>>::iterator it2 = mid;
+      pos = ceil((l.size() + 2)/2) - 1;
+      if (indx <= pos) {
+	if (indx == pos) {
+	  midsum -= (der + 1);
+	} else if (indx == pos - 1) {
+	  midsum -= der;
+	} else {
+	  midsum -= (*mid).second;
+	}
+      }
+      (*it).second -= (der + 1);
+      if (it != --l.end()) {
+	aux = it;
+	l.insert(++aux, make_pair((*it).first, der));
+	l.insert(++aux, make_pair(e, 1));
+      } else {
+	l.push_back(make_pair(e, 1));
+	l.push_back(make_pair((*it).first, der));
+      }
+      if (indx >= pos || indx == midpos ) {
+	aux = mid;
+	mid = ++aux;
+      } else if (indx < midpos) {
+	aux = mid;
+	mid = --aux;
+      }
+      midpos = pos;
+    }
+  }
+}
+
 void CompactChainList::removeFirstOcurrence(Element e) {
   list<pair<Element, int>>::iterator it;
   bool flag;
@@ -307,43 +472,25 @@ void CompactChainList::removeFirstOcurrence(Element e) {
       if (indx <= midpos)
 	midSum -= 1;
     } else {
-      this -> remove(it, indx);
+      remove(it, indx);
     }  
   }
 };
 
-//falta
 void CompactChainList::removeAllOcurrences(Element e) {
   list<pair<Element, int>>::iterator it = l.begin(), aux, aux2;
-  int indx = 0, pos;
+  int i = 0;
   while (it != l.end()) {
-    
     if ((*it).first == e) {
       aux = it;
-      s -= (*it).second;
-      pos = ceil((l.size() - 1)/2) - 1;
-      if (indx <= pos) {
-	midSum -= (*it).second;
-      }
-      if (pos < midPos) {
-	midPos = pos;
-	aux2 = mid;
-	mid = --aux2;
-      }
       ++it;
-      l.erase(aux);
-    } else
+      remove(it, i);
+    } else {
       ++it;
-    ++indx;
+    }
+    ++i;
   }
-  it = l.begin();
-  midPos = ceil(l.size()/2) - 1;
-  for (int i = 0; i < ceil(l.size()/2); ++i) {
-    midSum += (*it).second;
-    ++it;
-  }
-  mid = --it;  
-};
+}
 
 void CompactChainList::removeBlockPosition(int p) {
   list<pair<Element, int>>::iterator it = l.begin(), aux;
@@ -372,7 +519,7 @@ void CompactChainList::removeBlockPosition(int p) {
   }
 };
 
-void remove(list<pair<Element, int>>::iterator it, int indx) {
+void CompactChainList::remove(list<pair<Element, int>>::iterator it, int indx) {
   if (l.size() > 1) {
     list<pair<Element, int>>::iterator it2 = mid;
     pos = ceil((l.size() - 1)/2) - 1;
@@ -434,7 +581,6 @@ void CompactChainList::insertElement(int p, Element e) {
 	i += (*it).second;
       }
     }
-    
     if ((*it).first == e) {
       (*it).second += 1;
       if (p <= midPos)
@@ -445,12 +591,25 @@ void CompactChainList::insertElement(int p, Element e) {
       if (indx <= pos) {
 	midsum -= (*(++it2)).second;
 	midsum += 1;
+	if (pos != midpos && it == ++mid) {
+	  l.insert(it, make_pair(e, 1));
+	  it2 = mid;
+	  mid = ++it2;
+	} else if (pos == midpos) {
+	  it2 = mid;
+	  l.insert(it, make_pair(e, 1));
+	  mid = --it2;
+	} else {
+	  l.insert(it, make_pair(e, 1));
+	}
       } else {
-	it2 = mid;
-	mid = ++it2;
-	midPos = pos;
+	l.insert(it, make_pair(e, 1));
+	if (pos != midpos) {
+	  it2 = mid;
+	  mid = ++it2;
+	}
       }
-      l.insert(it, make_pair(e, 1));
+      midpos = pos;
     } else {
       list<pair<Element, int>>::iterator it2 = mid;
       pos = ceil((l.size() + 2)/2) - 1;
@@ -459,12 +618,9 @@ void CompactChainList::insertElement(int p, Element e) {
 	  midsum -= (der + 1);
 	} else if (indx == pos - 1) {
 	  midsum -= der;
-	  midsum -= (*mid).second;
 	} else {
-	  aux = mid;
 	  midsum += 1;
 	  midsum -= (*mid).second;
-	  midsum -= (*(--aux)).second;
 	}
       }
       (*it).second -= (der + 1);
@@ -476,9 +632,14 @@ void CompactChainList::insertElement(int p, Element e) {
 	l.push_back(make_pair(e, 1));
 	l.push_back(make_pair((*it).first, der + 1));
       }
+      if (indx >= pos || indx == midpos ) {
+	aux = mid;
+	mid = ++aux;
+      } else if (indx < midpos) {
+	aux = mid;
+	mid = --aux;
+      }
       midpos = pos;
-      aux = mid;
-      mid = ++aux;
     }
   }
 };

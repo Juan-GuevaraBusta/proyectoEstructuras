@@ -36,9 +36,9 @@ class CompactChainList {
   list<Element> expand(); // listo - probar
 
   //Operaciones modificadoras
-  void set(int p, Element e);
+  void set(int p, Element e); // listo - probar
   void removeFirstOcurrence(Element e);// listo - probar
-  void removeAllOcurrences(Element e); // 
+  void removeAllOcurrences(Element e); // listo - probar
   void removeBlockPosition(int p); // listo - probar
   void insertElement(int p, Element e); // listo - probar
   void modifyAllOcurrences(Element e1, Element e2); // listo - probar

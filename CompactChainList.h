@@ -46,7 +46,7 @@ class CompactChainList {
   void push_back(Element e, int count); //listo - probar
   //static
   void sortVectirCCL(vector<CompactChainList> &v); // yuca
-  void lol(); //falta
+  void print(); //falta
 
   //Sobrecarga de operadores
   CompactChainList operator+(CompactChainList &oth); // listo - probar

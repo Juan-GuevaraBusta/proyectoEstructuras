@@ -10,7 +10,7 @@ Mayo 13 de 2024
 #include <vector>
 #include <list>
 #include <deque>
-#include "ccl.h"
+#include "CompactChainList.h"
 
 int main(){
   int i, casos, v, n;

@@ -596,15 +596,15 @@ void CompactChainList::sortVectirCCL(vector<CompactChainList> &v) {
 };
 
 //falta
-void CompactChainList::lol() {
+void CompactChainList::print() {
   list<pair<Element, int>>::iterator it;
-  printf("<");
+  printf("[");
   for (it = l.begin(); it != --l.end(); ++it)
-    printf("(%d, %d), ", (*it).first, (*it).second);
+    printf("{%d, %d},", (*it).first, (*it).second);
   if (!l.empty())
-    printf("(%d, %d)>\n", (*it).first, (*it).second);
+    printf("{%d, %d}]\n", (*it).first, (*it).second);
   else
-    printf(">\n");
+    printf("]\n");
 };
 
 //Sobrecarga de operadores

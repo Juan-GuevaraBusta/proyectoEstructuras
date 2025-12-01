@@ -4,13 +4,13 @@
 #include<cmath>
 
 //Operaciones constructoras
-CompactChainList::CompactChainList() {
+CompactChainList::CompactChainList() { //O(1)
   this -> s = 0;
   this -> midPos = 0;
   this -> midSum = 0;
 };
 
-CompactChainList::CompactChainList(vector<Element> &v) {
+CompactChainList::CompactChainList(vector<Element> &v) { //O(n), n = v.size()
   Element aux;
   int count = 1;
   this -> s = v.size();
@@ -39,7 +39,7 @@ CompactChainList::CompactChainList(vector<Element> &v) {
   mid = --it;
 };
 
-CompactChainList::CompactChainList(CompactChainList &l2) {
+CompactChainList::CompactChainList(CompactChainList &l2) { // O(n), n = l2.l.size()
   this -> s = l2.s;
   this -> midPos = l2.midPos;
   this -> midSum = l2.midSum;
@@ -54,11 +54,11 @@ CompactChainList::CompactChainList(CompactChainList &l2) {
   
 //Operaciones analizadoras
 
-int CompactChainList::size() {
+int CompactChainList::size() { // O(1)
   return s;
 };
 
-int CompactChainList::searchElement(Element e) {
+int CompactChainList::searchElement(Element e) { //O(n) en el peor caso cuando el elemento no está o está en el último bloque, n = l.size()
   int ans = 0;
   bool flag = false;
   for (list<pair<Element, int>>::iterator it = l.begin(); it != l.end() && !flag; ++it) {
@@ -141,86 +141,48 @@ int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
 };
 
 int CompactChainList::getOcurrences(vector<Element> &v) {
+  list<pair<Element, int>>::iterator it1, it2, it3;
+  CompactChainList aux(v);
   int ans = 0;
-  if (!v.empty()) {
-    list<Element> seq = this -> expand();
-    if (!seq.empty()) {
-      vector<Element> sequence;
-      for (list<Element>::iterator it = seq.begin(); it != seq.end(); ++it) 
-        sequence.push_back(*it); 
-      int seqSize = sequence.size();
-      int vSize = v.size();
-      if (seqSize >= vSize) {
-        vector<pair<int, int>> stack;
-        stack.push_back(make_pair(0, 0));
-        
-        bool flag = false;
-        while (!stack.empty() && !flag) {
-          pair<int, int> actual = stack.back();
-          stack.pop_back();
-          int posSeq = actual.first;
-          int posV = actual.second;
-          if (posV >= vSize)
-            ans++;
-          else if (posSeq < seqSize) {
-            bool encontrado = false;
-            for (int i = posSeq; i < seqSize && !encontrado; ++i) {
-              if (sequence[i] == v[posV]) {
-                stack.push_back(make_pair(i + 1, posV + 1));
-                encontrado = false; 
-              }
-            }
-          }
-        }
-      }
+  bool flag1 = aux.l.empty(), flag2;
+  for (it1 = l.begin(); it1 != l.end() && !flag1; ++it1) {
+    it2 = aux.l.begin();
+    it3 = it1;
+    flag2 = false;
+    while (!flag2 && it2 != aux.l.end() && it3 != l.end()) {
+      if ((*it2).first == (*it3).first && (*it2).second <= (*it3).second)
+        ++it2;
+      ++it3;
+      flag2 = it3 == l.end() && it2 != aux.l.end();
     }
+    if (!flag2 && it2 == aux.l.end())
+      ++ans;
   }
-  
   return ans;
 };
 
 int CompactChainList::getIndexFirstOcurrence(vector<Element> &v) {
-  int ans = -1;
-  if (!v.empty()) {
-    list<Element> seq = this -> expand();
-    if (!seq.empty()) {
-      vector<Element> sequence;
-      for (list<Element>::iterator it = seq.begin(); it != seq.end(); ++it)
-        sequence.push_back(*it);
-      int seqSize = sequence.size();
-      int vSize = v.size();
-      if (seqSize >= vSize) {
-        bool flag = false;
-        for (int inicio = 0; inicio < seqSize && ans == -1 && !flag; ++inicio) {
-          if (sequence[inicio] == v[0]) {
-            vector<pair<int, int>> stack;
-            stack.push_back(make_pair(inicio + 1, 1));
-            bool encontrado = false;
-            while (!stack.empty() && !encontrado && !flag) {
-              pair<int, int> actual = stack.back();
-              stack.pop_back();
-              int posSeq = actual.first;
-              int posV = actual.second;
-              if (posV >= vSize) {
-                ans = inicio;
-                encontrado = true;
-                flag = true;
-              }
-              else if (posSeq < seqSize) {
-                bool encontrado2 = false;
-                for (int i = posSeq; i < seqSize && !encontrado2; ++i) {
-                  if (sequence[i] == v[posV]) {
-                    stack.push_back(make_pair(i + 1, posV + 1));
-                    encontrado2 = false;
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
+  list<pair<Element, int>>::iterator it1, it2, it3;
+  CompactChainList aux(v);
+  int ans = -1, idx = 0;
+  bool flag1 = aux.l.empty(), flag2, flag3 = false;
+  for (it1 = l.begin(); it1 != l.end() && !flag1 && !flag3; ++it1) {
+    it2 = aux.l.begin();
+    it3 = it1;
+    flag2 = false;
+    while (!flag2 && it2 != aux.l.end() && it3 != l.end()) {
+      if ((*it2).first == (*it3).first && (*it2).second <= (*it3).second)
+        ++it2;
+      ++it3;
+      flag2 = it3 == l.end() && it2 != aux.l.end();
     }
+    if (!flag2 && it2 == aux.l.end()) {
+      ans = idx;
+      flag3 = true;
+    }
+    idx += (*it1).second;
   }
+  if (flag1) ans = 0;
   return ans;
 };
 

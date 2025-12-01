@@ -4,42 +4,46 @@
 #include<cmath>
 
 //Operaciones constructoras
-CompactChainList::CompactChainList() { //O(1)
-  this -> s = 0;
-  this -> midPos = 0;
-  this -> midSum = 0;
+
+//O(1), solo se realizan asignaciones
+CompactChainList::CompactChainList() { 
+  s = 0;
+  midPos = 0;
+  midSum = 0;
 };
 
-CompactChainList::CompactChainList(vector<Element> &v) { //O(n), n = v.size()
+//O(n), donde n es el tamaño del vector
+CompactChainList::CompactChainList(vector<Element> &v) { 
   Element aux;
   int count = 1;
-  this -> s = v.size();
-  this -> midSum = 0;
+  s = v.size();
+  midSum = 0;
   
   if (!v.empty()) aux = v.at(0);
   for (int i = 1; i < v.size(); ++i) {
     if (v.at(i) == aux) {
       ++count;
     } else {
-      this -> l.push_back(make_pair(v.at(i - 1), count));
+      l.push_back(make_pair(v.at(i - 1), count));
       count = 1;
       aux = v.at(i);
     }
   }
   if (!v.empty())
-    this -> l.push_back(make_pair(v.at(v.size() - 1), count));
+    l.push_back(make_pair(v.at(v.size() - 1), count));
   
-  this -> midPos = ceil(l.size()/2.0) - 1;
+  midPos = ceil(l.size()/2.0) - 1;
   list<pair<Element, int>>::iterator it = l.begin();
   
   for (int i = 0; i < ceil(l.size()/2.0); ++i) {
-    this -> midSum += (*it).second;
+    midSum += (*it).second;
     ++it;
   }
   mid = --it;
 };
 
-CompactChainList::CompactChainList(CompactChainList &l2) { // O(n), n = l2.l.size()
+// O(n), donde n es el tamaño de la ccl l2
+CompactChainList::CompactChainList(CompactChainList &l2) {
   this -> s = l2.s;
   this -> midPos = l2.midPos;
   this -> midSum = l2.midSum;
@@ -49,16 +53,19 @@ CompactChainList::CompactChainList(CompactChainList &l2) { // O(n), n = l2.l.siz
   list<pair<Element, int>>::iterator it = l.begin();
   for (int i = 0; i <= midPos; ++i)
     ++it;
-  this -> mid = --it;
+  mid = --it;
 };
   
 //Operaciones analizadoras
 
-int CompactChainList::size() { // O(1)
+// O(1), solo se retorna una variable
+int CompactChainList::size() { 
   return s;
 };
 
-int CompactChainList::searchElement(Element e) { //O(n) en el peor caso cuando el elemento no está o está en el último bloque, n = l.size()
+//O(n) en el peor caso cuando el elemento no está o está en el último bloque donde n es el tamaño de la lsta interna l
+//en el mejor caso cuando el elemento está en la primera posición de la lista interna la complejidad es O(1)
+int CompactChainList::searchElement(Element e) {
   int ans = 0;
   bool flag = false;
   for (list<pair<Element, int>>::iterator it = l.begin(); it != l.end() && !flag; ++it) {
@@ -70,6 +77,7 @@ int CompactChainList::searchElement(Element e) { //O(n) en el peor caso cuando e
   if (!flag) ans = -1;
   return ans;
 };
+
 
 int CompactChainList::getConsecutiveOcurrences(vector<Element> &v) {
   list<pair<Element, int>>::iterator it1, it2, aux1, aux2;
@@ -640,8 +648,12 @@ bool CompactChainList::operator<(CompactChainList &oth) {
   return ans;
 };
 
+//O(n) en el peor caso cuando las listas son de igual size y tamaño de la lista interna, todos sus elementos son iguales o
+// difieren solo en el último bloque, donde n es el tamaño de la lista interna, en el mejor de los casos es O(1) cuando las
+//listas internas de las ccl difieren de size o tamaño de la lista interna
+
 bool CompactChainList::operator==(const CompactChainList &oth) const {
-  bool ans = s == oth.s;
+  bool ans = s == oth.s && l.size() == oth.l.size();
   list<pair<Element, int>>::const_iterator it2 = oth.l.cbegin();
   for (list<pair<Element, int>>::const_iterator it1 = l.cbegin(); it1 != l.cend() && ans; ++it1) {
     if ((*it1).first != (*it2).first || (*it1).second != (*it2).second) ans = false;

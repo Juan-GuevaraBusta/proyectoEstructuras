@@ -78,7 +78,8 @@ int CompactChainList::searchElement(Element e) {
   return ans;
 };
 
-
+//O(n * m) en el peor caso cuando la secuencia se encuentra la mayor cantidad de veces posible en la ccl
+//donde n es el tamaño de la lista interna, m el tamaño de la lista interna de aux
 int CompactChainList::getConsecutiveOcurrences(vector<Element> &v) {
   list<pair<Element, int>>::iterator it1, it2, aux1, aux2;
   CompactChainList aux(v);
@@ -108,6 +109,8 @@ int CompactChainList::getConsecutiveOcurrences(vector<Element> &v) {
   return ans;
 }
 
+//O(n * m) en el peor caso cuando la secuencia se encuentra la mayor cantidad de veces posible en la ccl a excepción del último bloque de la misma
+//donde n es el tamaño de la lista interna, m el tamaño de la lista interna de aux
 int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
   list<pair<Element, int>>::iterator it1, it2, aux1, aux2;
   CompactChainList aux(v);
@@ -244,6 +247,7 @@ int CompactChainList::getIndexFirstOcurrence(vector<Element> &v) {
   return ans;
 };
 
+//O(n + m) donde n es el tamaño de la lista interna de la ccl1 y m el tamaño de la lista interna de oth
 CompactChainList CompactChainList::getLexicographicFusion(CompactChainList &oth) {
   CompactChainList ans;
   list<pair<Element, int>>::iterator it1 = l.begin(), it2 = oth.l.begin();
@@ -677,7 +681,7 @@ void CompactChainList::print() {
 
 //Sobrecarga de operadores
 
-//
+//O(n + m) donde n es el tamaño de la lista interna de la ccl1 y m el tamaño de la lista interna de oth
 CompactChainList CompactChainList::operator+(CompactChainList &oth) {
   CompactChainList ans = this -> getLexicographicFusion(oth);
   return ans;

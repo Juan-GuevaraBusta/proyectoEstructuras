@@ -149,48 +149,98 @@ int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
 };
 
 int CompactChainList::getOcurrences(vector<Element> &v) {
-  list<pair<Element, int>>::iterator it1, it2, it3;
+  list<pair<Element, int>>::iterator it1, it2, it3, aux1;
   CompactChainList aux(v);
-  int ans = 0;
-  bool flag1 = aux.l.empty(), flag2;
-  for (it1 = l.begin(); it1 != l.end() && !flag1; ++it1) {
+  int ans = 0, count = 0, rep;
+  bool flag1 = false, flag2, flag3;
+  for(it1 = l.begin(); it1 != l.end() && !v.empty() && !flag1; ++it1){
+    flag1 = l.size() - count < aux.l.size();
     it2 = aux.l.begin();
-    it3 = it1;
-    flag2 = false;
-    while (!flag2 && it2 != aux.l.end() && it3 != l.end()) {
-      if ((*it2).first == (*it3).first && (*it2).second <= (*it3).second)
-        ++it2;
-      ++it3;
-      flag2 = it3 == l.end() && it2 != aux.l.end();
+    rep = 0;
+    flag3 = false;
+    while(!flag1 && !flag3 && (*it1).first == (*it2).first && (*it1).second - rep >= (*it2).second){
+      flag2 = false;
+      it3 = it1;
+      int offset = rep;
+      aux1 = it2;
+      ++aux1;
+      if(aux.l.size() > 1){
+        while(aux1 != aux.l.end() && !flag2){
+          while(it3 != l.end() && (*it3).first != (*aux1).first){
+            ++it3;
+            offset = 0;
+          }
+          if(it3 == l.end())
+            flag2 = true;
+          else if((*it3).second - offset < (*aux1).second)
+            flag2 = true;
+          else{
+            offset += (*aux1).second;
+            if(offset == (*it3).second){
+              ++it3;
+              offset = 0;
+            }
+            ++aux1;
+          }
+        }
+      }
+      if(!flag2) ++ans;
+      ++rep;
+      it2 = aux.l.begin();
+      flag3 = aux.l.size() > 1;
     }
-    if (!flag2 && it2 == aux.l.end())
-      ++ans;
+    ++count;
   }
   return ans;
 };
 
 int CompactChainList::getIndexFirstOcurrence(vector<Element> &v) {
-  list<pair<Element, int>>::iterator it1, it2, it3;
+  list<pair<Element, int>>::iterator it1, it2, it3, itStart;
   CompactChainList aux(v);
   int ans = -1, idx = 0;
   bool flag1 = aux.l.empty(), flag2, flag3 = false;
-  for (it1 = l.begin(); it1 != l.end() && !flag1 && !flag3; ++it1) {
-    it2 = aux.l.begin();
-    it3 = it1;
-    flag2 = false;
-    while (!flag2 && it2 != aux.l.end() && it3 != l.end()) {
-      if ((*it2).first == (*it3).first && (*it2).second <= (*it3).second)
-        ++it2;
-      ++it3;
-      flag2 = it3 == l.end() && it2 != aux.l.end();
-    }
-    if (!flag2 && it2 == aux.l.end()) {
-      ans = idx;
-      flag3 = true;
+  for(it1 = l.begin(); it1 != l.end() && !flag1 && !flag3; ++it1){
+    for(int rep = 0; rep < (*it1).second && !flag3; ++rep){
+      it2 = aux.l.begin();
+      it3 = it1;
+      int offset = rep;
+      flag2 = false;
+      itStart = it3;
+      int startIdx = idx + rep;
+      int firstPos = -1;
+      while(!flag2 && it2 != aux.l.end()){
+        while(it3 != l.end() && (*it3).first != (*it2).first){
+          startIdx += (*it3).second;
+          ++it3;
+          offset = 0;
+        }
+        if(it3 == l.end())
+          flag2 = true;
+        else if((*it3).second - offset < (*it2).second)
+          flag2 = true;
+        else{
+          if(firstPos == -1){
+            if(itStart == it3)
+              firstPos = idx + offset;
+            else
+              firstPos = startIdx + offset;
+          }
+          offset += (*it2).second;
+          ++it2;
+          if(offset == (*it3).second){
+            ++it3;
+            offset = 0;
+          }
+        }
+      }
+      if(!flag2 && it2 == aux.l.end()){
+        ans = firstPos;
+        flag3 = true;
+      }
     }
     idx += (*it1).second;
   }
-  if (flag1) ans = 0;
+  if(flag1) ans = 0;
   return ans;
 };
 
@@ -236,6 +286,7 @@ CompactChainList CompactChainList::getLexicographicFusion(CompactChainList &oth)
   return ans;
 };
 
+//O(n * m) donde n es el taaño de la lista interna y m es el número en el second de cada elemento de la lista interna
 list<Element> CompactChainList::expand() {
   list<Element> ans;
   for (list<pair<Element, int>>::iterator it = l.begin(); it != l.end(); ++it)
@@ -246,6 +297,8 @@ list<Element> CompactChainList::expand() {
 
 //Operaciones modificadoras
 
+//O(n) en el peor caso (en realidad n/2) cuando la posición a insertar está en la mitad de la lista interna
+//O(1) en el mejr caso si se inserta al inicio o al final
 void CompactChainList::set(int p, Element e) {
   list<pair<Element, int>>::iterator it = l.begin(), aux;
   int i = 0, indx = 0, iz, der, pos;
@@ -339,6 +392,8 @@ void CompactChainList::set(int p, Element e) {
   }
 }
 
+//O(n) en el peor de los casos cuando la primera ocurrencia está en la última posición o no está
+//O(1) en el mejor caso cuando la primera ocurrencia está en la primera posición de la lista interna
 void CompactChainList::removeFirstOcurrence(Element e) {
   list<pair<Element, int>>::iterator it = l.begin();
   bool flag = false;
@@ -364,6 +419,7 @@ void CompactChainList::removeFirstOcurrence(Element e) {
   }
 };
 
+//O(n) donde n es el tamaño de la lista interna
 void CompactChainList::removeAllOcurrences(Element e) {
   list<pair<Element, int>>::iterator it = l.begin(), aux, aux2;
   int i = 0;
@@ -380,6 +436,8 @@ void CompactChainList::removeAllOcurrences(Element e) {
   }
 }
 
+//O(n) en el peor caso (en realidad n/2) cuando la posición a insertar está en la mitad de la lista interna
+//O(1) en el mejr caso si se inserta al inicio o al final
 void CompactChainList::removeBlockPosition(int p) {
   list<pair<Element, int>>::iterator it = l.begin(), aux;
   int i = 0, indx = 0, pos;
@@ -408,6 +466,8 @@ void CompactChainList::removeBlockPosition(int p) {
   }
 };
 
+//O(n) en el peor caso (en realidad n/2) cuando la posición a insertar está en la mitad de la lista interna
+//O(1) en el mejr caso si se inserta al inicio o al final
 void CompactChainList::remove(list<pair<Element, int>>::iterator it, int indx) {
   list<pair<Element, int>>::iterator aux;
   int pos;
@@ -440,6 +500,8 @@ void CompactChainList::remove(list<pair<Element, int>>::iterator it, int indx) {
   l.erase(it);
 };
 
+//O(n) en el peor caso (en realidad n/2) cuando la posición a insertar está en la mitad de la lista interna
+//O(1) en el mejr caso si se inserta al inicio o al final
 void CompactChainList::insertElement(int p, Element e) {
   list<pair<Element, int>>::iterator it = l.begin(), aux;
   int i = 0, indx = 0, aux2 = s, iz, der, pos;
@@ -538,7 +600,7 @@ void CompactChainList::insertElement(int p, Element e) {
   }
 };
 
-
+//O(n) donde n es el tamaño de la lista interna
 void CompactChainList::modifyAllOcurrences(Element e1, Element e2) {
   for (list<pair<Element, int>>::iterator it = l.begin(); it != l.end(); ++it) {
     if ((*it).first == e1)
@@ -546,6 +608,7 @@ void CompactChainList::modifyAllOcurrences(Element e1, Element e2) {
   }
 };
 
+//O(1)
 void CompactChainList::push_front(Element e, int count) {
   int pos;
   s += count;
@@ -570,6 +633,7 @@ void CompactChainList::push_front(Element e, int count) {
   }
 };
 
+//O(1)
 void CompactChainList::push_back(Element e, int count) {
   int pos;
   s += count;
@@ -592,10 +656,12 @@ void CompactChainList::push_back(Element e, int count) {
   }
 };
 
+//O(n^2 * log(n)) ya que la compledidad de realizar sort es O(n * log(n)) pero la comparación < tiene un costo de O(n)
 void CompactChainList::sortVectorCCL(vector<CompactChainList> &v) {
   //sort(v.begin(), v.end());
 };
 
+//O(n) donde n es el tamaño de a lista interna
 void CompactChainList::print() {
   list<pair<Element, int>>::iterator it;
   printf("Size: %d, Blocks: %d, Midpos: %d, Mid: {%d, %d},  MidSum: %d\n", s, l.size(), midPos, (*mid).first, (*mid).second, midSum);
@@ -611,11 +677,14 @@ void CompactChainList::print() {
 
 //Sobrecarga de operadores
 
+//
 CompactChainList CompactChainList::operator+(CompactChainList &oth) {
   CompactChainList ans = this -> getLexicographicFusion(oth);
   return ans;
 };
 
+// O(n) en el peor caso cuando el índice que se busca esta en el centro
+//que en realidad la complejidad nuca va a ser > a n/2, donde n es el tamaño de la ccl
 Element CompactChainList::operator[](int p) {
   Element ans;
   list<pair<Element, int>>::iterator it = l.begin();
@@ -636,6 +705,7 @@ Element CompactChainList::operator[](int p) {
   return ans;
 };
 
+// O(n), donde n es el tamaño de la ccl
 bool CompactChainList::operator<(CompactChainList &oth) {
   bool ans = false;
   list<pair<Element, int>>::iterator it2 = oth.l.begin();
@@ -660,6 +730,7 @@ bool CompactChainList::operator==(const CompactChainList &oth) const {
   return ans;
 };
 
+// O(n), donde n es el tamaño de la ccl oth
 CompactChainList& CompactChainList::operator=(const CompactChainList &oth) {
   this -> s = oth.s;
   this -> midPos = oth.midPos;

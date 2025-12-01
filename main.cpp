@@ -20,17 +20,19 @@ int main(){
   vector<Element> vec4;
   list<Element> lis;
 
+  CompactChainList ccl1, ccl2, ccl3, ccl4;
+  /*
   CompactChainList ccl1(vec1);
   CompactChainList ccl2(ccl1);
   CompactChainList ccl3(vec2);
   CompactChainList ccl4(vec3);
+  */
 
-  /*
   ccl1 = CompactChainList(vec1);
   ccl2 = CompactChainList(ccl1);
   ccl3 = CompactChainList(vec2);
   ccl4 = CompactChainList(vec3);
-  */
+  
   printf("*************** Creación **************\n");
   ccl1.print();
   ccl3.print();

@@ -21,38 +21,38 @@ class CompactChainList {
   
  public:
   //Operaciones constructoras
-  CompactChainList(); // listo - probar
-  CompactChainList(vector<Element> &v); // listo - probar
-  CompactChainList(CompactChainList &l2); // listo - probar
+  CompactChainList();
+  CompactChainList(vector<Element> &v);
+  CompactChainList(CompactChainList &l2);
   
   //Operaciones analizadoras
-  int size(); // listo - probar
-  int searchElement(Element e); // listo - probar
-  int getConsecutiveOcurrences(vector<Element> &v);// listo - probar
-  int getIndexFirstConsecutiveOcurrence(vector<Element> &v); // listo - probar
+  int size();
+  int searchElement(Element e);
+  int getConsecutiveOcurrences(vector<Element> &v);
+  int getIndexFirstConsecutiveOcurrence(vector<Element> &v);
   int getOcurrences(vector<Element> &v);
   int getIndexFirstOcurrence(vector<Element> &v);
-  CompactChainList getLexicographicFusion(CompactChainList &oth); // listo - probar
-  list<Element> expand(); // listo - probar
+  CompactChainList getLexicographicFusion(CompactChainList &oth);
+  list<Element> expand();
 
   //Operaciones modificadoras
-  void set(int p, Element e); // listo - probar
-  void removeFirstOcurrence(Element e);// listo - probar
-  void removeAllOcurrences(Element e); // listo - probar
-  void removeBlockPosition(int p); // listo - probar
-  void insertElement(int p, Element e); // listo - probar
-  void modifyAllOcurrences(Element e1, Element e2); // listo - probar
-  void push_front(Element e, int count); // listo - probar
-  void push_back(Element e, int count); //listo - probar
-  //static
-  void sortVectirCCL(vector<CompactChainList> &v); // yuca
-  void print(); //falta
-
+  void set(int p, Element e);
+  void removeFirstOcurrence(Element e);
+  void removeAllOcurrences(Element e);
+  void removeBlockPosition(int p);
+  void insertElement(int p, Element e);
+  void modifyAllOcurrences(Element e1, Element e2);
+  void push_front(Element e, int count);
+  void push_back(Element e, int count);
+  void sortVectorCCL(vector<CompactChainList> &v);
+  void print();
+  
   //Sobrecarga de operadores
-  CompactChainList operator+(CompactChainList &oth); // listo - probar
-  Element operator[](int p); // listo - probar
-  bool operator<(CompactChainList &oth); // no se si es asi 
-  bool operator==(const CompactChainList &oth) const; //listo - probar
+  CompactChainList operator+(CompactChainList &oth);
+  Element operator[](int p);
+  bool operator<(CompactChainList &oth);
+  bool operator==(const CompactChainList &oth) const;
+  CompactChainList& operator=(const CompactChainList &oth);
 };
 
 #endif

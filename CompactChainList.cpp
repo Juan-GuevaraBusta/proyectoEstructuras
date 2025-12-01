@@ -592,12 +592,10 @@ void CompactChainList::push_back(Element e, int count) {
   }
 };
 
-//static
-void CompactChainList::sortVectirCCL(vector<CompactChainList> &v) {
+void CompactChainList::sortVectorCCL(vector<CompactChainList> &v) {
   //sort(v.begin(), v.end());
 };
 
-//falta
 void CompactChainList::print() {
   list<pair<Element, int>>::iterator it;
   printf("Size: %d, Blocks: %d, Midpos: %d, Mid: {%d, %d},  MidSum: %d\n", s, l.size(), midPos, (*mid).first, (*mid).second, midSum);
@@ -639,10 +637,10 @@ Element CompactChainList::operator[](int p) {
 };
 
 bool CompactChainList::operator<(CompactChainList &oth) {
-  bool ans = this -> s == oth.s;
+  bool ans = false;
   list<pair<Element, int>>::iterator it2 = oth.l.begin();
-  for (list<pair<Element, int>>::iterator it1 = l.begin(); it1 != l.end() && ans; ++it1) {
-    if ((*it1).first > (*it2).first) ans = false;
+  for (list<pair<Element, int>>::iterator it1 = l.begin(); it1 != l.end() && !ans; ++it1) {
+    if ((*it1).first > (*it2).first) ans = true;
     ++it2;
   }
   return ans;
@@ -660,4 +658,18 @@ bool CompactChainList::operator==(const CompactChainList &oth) const {
     ++it2;
   }
   return ans;
+};
+
+CompactChainList& CompactChainList::operator=(const CompactChainList &oth) {
+  this -> s = oth.s;
+  this -> midPos = oth.midPos;
+  this -> midSum = oth.midSum;
+  for (list<pair<Element, int>>::const_iterator it = oth.l.cbegin(); it != oth.l.cend(); ++it)
+    this -> l.push_back(*it);
+  
+  list<pair<Element, int>>::iterator it = l.begin();
+  for (int i = 0; i <= midPos; ++i)
+    ++it;
+  mid = --it;
+  return *this;
 };

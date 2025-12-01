@@ -24,8 +24,6 @@ int main(){
   CompactChainList ccl2(ccl1);
   CompactChainList ccl3(vec2);
   CompactChainList ccl4(vec3);
-  CompactChainList ccl5;
-  CompactChainList ccl6(vec4);
 
   /*
   ccl1 = CompactChainList(vec1);
@@ -77,28 +75,24 @@ int main(){
   }
 
   printf("******** Fusión Lexicográfica *********\n");
-  /*
-  ccl5 = ccl1 + ccl4;
-  ccl6 = ccl2 + ccl5;
-  */
+  CompactChainList ccl5(ccl1 + ccl4);
+  CompactChainList ccl6(ccl2 + ccl5);
   
-  (ccl1 + ccl4).print();
-  (ccl2 + ccl5).print();
+  (ccl5).print();
+  (ccl6).print();
 
   printf("********* Agregar Elementos ***********\n");
   ccl1.push_back(11, 2);
   ccl1.push_front(7, 3);
   ccl2.push_front(7, 1);
   ccl2.insertElement(5, 6);
-  ccl3.print();
   ccl3.insertElement(4, 14);
+  ccl3.print();
   ccl3.insertElement(3, 16);
   ccl1.print();
   ccl2.print();
   ccl3.print();
-
   printf("******** Modificar Elementos **********\n");
-  ccl2.print();
   ccl2.set(0, 20);
   ccl2.set(ccl2.size() - 1, 50);
   ccl2.set(20, 40);

@@ -72,7 +72,7 @@ int CompactChainList::searchElement(Element e) {
 };
 
 int CompactChainList::getConsecutiveOcurrences(vector<Element> &v) {
-  list<pair<Element, int>>::iterator it1, it2, aux1;
+  list<pair<Element, int>>::iterator it1, it2, aux1, aux2;
   CompactChainList aux(v);
   int ans = 0, count = 0, rep;
   bool flag1 = false, flag2, flag3;
@@ -101,16 +101,16 @@ int CompactChainList::getConsecutiveOcurrences(vector<Element> &v) {
 }
 
 int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
-  list<pair<Element, int>>::iterator it1, it2, aux1;
+  list<pair<Element, int>>::iterator it1, it2, aux1, aux2;
   CompactChainList aux(v);
   int ans = 0, count = 0, indx = 0, rep;
-  bool flag1 = false, flag2, flag3;
-  for (it1 = l.begin(); it1 != l.end() && !v.empty() && !flag1; ++it1) {
+  bool flag1 = false, flag2, flag3, flag4 = false;
+  for (it1 = l.begin(); it1 != l.end() && !v.empty() && !flag1 && !flag4; ++it1) {
     flag1 = l.size() - count < aux.size();
     it2 = aux.l.begin();
     rep = 0;
     flag3 = false;
-    while (!flag1 && !flag3 && (*it1).first == (*it2).first && (*it1).second - rep >= (*it2).second) {
+    while (!flag1 && !flag3 && !flag4 && (*it1).first == (*it2).first && (*it1).second - rep >= (*it2).second) {
       flag2 = false;
       aux1 = it1;
       if (aux.l.size() > 1) ++aux1;
@@ -121,15 +121,23 @@ int CompactChainList::getIndexFirstConsecutiveOcurrence(vector<Element> &v) {
       if (!flag2) flag2 = (*(--aux.l.end())).second > (*aux1).second - rep;
       if (!flag2) {
 	++ans;
-	
+	flag4 = true;
       }
       ++rep;
       it2 = aux.l.begin();
       flag3 = aux.l.size() > 1;
     }
+    indx += (*it1).second;
     ++count;
   }
-  return ans;
+  aux2 = it1;
+  indx -= (*(--aux2)).second;
+  if (flag4) {
+    if (aux.l.size() > 1) indx += ((*(--it1)).second - (*(aux.l.begin())).second);
+  } else {
+    indx = -1;
+  }
+  return indx;
 };
 
 int CompactChainList::getOcurrences(vector<Element> &v) {
